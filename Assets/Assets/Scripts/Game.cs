@@ -13,13 +13,18 @@ public class Game : MonoBehaviour {
     float initialPlayerBodyDrag;
     public Text inputText;
     Dictionary<string, Delegates.VoidVoid> commandMap;
-    const float WALK_ACCELERATION = 50;
-    const float WALK_MAX_VELOCITY = 5;
+    public float WALK_ACCELERATION = 50;
+    public float WALK_MAX_VELOCITY = 5;
+    public float JUMP_POWER = 500;
+    public float STOP_DECELERATION = 5;
+    public float GRAVITY = 5;
     WalkDirection walkDirection = WalkDirection.None;
     Dictionary<WalkDirection, Vector3> directedWalkVectorMap;
 
     // Use this for initialization
     void Start () {
+        Physics.gravity = Vector3.down * GRAVITY;
+
         playerBody = player.GetComponent<Rigidbody>();
         initialPlayerBodyDrag = playerBody.drag;
 
@@ -40,7 +45,7 @@ public class Game : MonoBehaviour {
     void StopCommand()
     {
         Dbg.Log("StopCommand");
-        player.GetComponent<Rigidbody>().drag = 5;
+        player.GetComponent<Rigidbody>().drag = STOP_DECELERATION;
         walkDirection = WalkDirection.None;
     }
 
@@ -85,7 +90,8 @@ public class Game : MonoBehaviour {
 
     private void Jump()
     {
-        throw new NotImplementedException();
+        Dbg.Log(this, "jump");
+        playerBody.AddForce(Vector3.up * JUMP_POWER);
     }
 
     // Update is called once per frame
