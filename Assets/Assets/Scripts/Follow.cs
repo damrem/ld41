@@ -8,7 +8,8 @@ public class Follow : MonoBehaviour {
 
 		Vector2 delta = target.transform.position - transform.position;
 
-		Rigidbody body = GetComponent<Rigidbody> ();
-		body.velocity = delta;
+		Rigidbody2D body = GetComponent<Rigidbody2D> ();
+        if(delta.magnitude>float.Epsilon)
+		    body.velocity = delta;
 	}
 }

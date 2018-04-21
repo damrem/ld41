@@ -1,7 +1,4 @@
-﻿//using System;
-using UnityEngine;
-
-namespace Ext
+﻿namespace UnityEngine
 {
 	public static class Vector2Ext
 	{

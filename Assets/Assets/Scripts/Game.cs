@@ -9,7 +9,7 @@ public enum WalkDirection {None, Left, Right};
 public class Game : MonoBehaviour {
 
     public GameObject player;
-    Rigidbody playerBody;
+    Rigidbody2D playerBody;
     float initialPlayerBodyDrag;
     public Text inputText;
     Dictionary<string, Delegates.VoidVoid> commandMap;
@@ -19,13 +19,13 @@ public class Game : MonoBehaviour {
     public float STOP_DECELERATION = 5;
     public float GRAVITY = 5;
     WalkDirection walkDirection = WalkDirection.None;
-    Dictionary<WalkDirection, Vector3> directedWalkVectorMap;
+    Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
 
     // Use this for initialization
     void Start () {
-        Physics.gravity = Vector3.down * GRAVITY;
+        Physics2D.gravity = Vector2.down * GRAVITY;
 
-        playerBody = player.GetComponent<Rigidbody>();
+        playerBody = player.GetComponent<Rigidbody2D>();
         initialPlayerBodyDrag = playerBody.drag;
 
         commandMap = new Dictionary<string, Delegates.VoidVoid>();
@@ -34,25 +34,24 @@ public class Game : MonoBehaviour {
         commandMap.Add("RIGHT", RightCommand);
         commandMap.Add("STOP", StopCommand);
 
-        directedWalkVectorMap = new Dictionary<WalkDirection, Vector3>()
+        directedWalkVectorMap = new Dictionary<WalkDirection, Vector2>()
         {
-            { WalkDirection.Left, Vector3.left },
-            { WalkDirection.None, Vector3.zero },
-            { WalkDirection.Right, Vector3.right }
+            { WalkDirection.Left, Vector2.left },
+            { WalkDirection.None, Vector2.zero },
+            { WalkDirection.Right, Vector2.right }
         };
     }
 
     void StopCommand()
     {
         Dbg.Log("StopCommand");
-        player.GetComponent<Rigidbody>().drag = STOP_DECELERATION;
+        playerBody.drag = STOP_DECELERATION;
         walkDirection = WalkDirection.None;
     }
 
     private void StopWalking()
     {
         Dbg.Log("StopWalking");
-        //player.GetComponent<Rigidbody>().AddForce(Vector3.left);
     }
 
     void RightCommand()
@@ -64,7 +63,7 @@ public class Game : MonoBehaviour {
 
     void Walk(WalkDirection direction)
     {
-        Vector3 directedVector = directedWalkVectorMap.Get(direction);
+        Vector2 directedVector = directedWalkVectorMap.Get(direction);
         if (playerBody.velocity.magnitude < WALK_MAX_VELOCITY) playerBody.AddForce(directedVector * WALK_ACCELERATION);
         if (playerBody.velocity.magnitude > WALK_MAX_VELOCITY) playerBody.velocity.SetMagnitude(WALK_MAX_VELOCITY);
     }
@@ -91,7 +90,7 @@ public class Game : MonoBehaviour {
     private void Jump()
     {
         Dbg.Log(this, "jump");
-        playerBody.AddForce(Vector3.up * JUMP_POWER);
+        playerBody.AddForce(Vector2.up * JUMP_POWER);
     }
 
     // Update is called once per frame
