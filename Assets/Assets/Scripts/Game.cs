@@ -11,6 +11,7 @@ public class Game : MonoBehaviour {
     public GameObject player;
     Rigidbody2D playerBody;
     float initialPlayerBodyDrag;
+
     public Text inputText;
     Dictionary<string, Delegates.VoidVoid> commandMap;
     public float WALK_ACCELERATION = 50;
@@ -21,7 +22,6 @@ public class Game : MonoBehaviour {
     WalkDirection walkDirection = WalkDirection.None;
     Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
 
-    // Use this for initialization
     void Start () {
         Physics2D.gravity = Vector2.down * GRAVITY;
 
@@ -44,7 +44,7 @@ public class Game : MonoBehaviour {
 
     void StopCommand()
     {
-        Dbg.Log("StopCommand");
+        Dbg.Log(this, "StopCommand");
         playerBody.drag = STOP_DECELERATION;
         walkDirection = WalkDirection.None;
     }
@@ -63,15 +63,10 @@ public class Game : MonoBehaviour {
 
     void Walk(WalkDirection direction)
     {
+        Dbg.Log(this, (direction != WalkDirection.None) + " && " + Mathf.Abs(playerBody.velocity.x));
         Vector2 directedVector = directedWalkVectorMap.Get(direction);
         if (playerBody.velocity.magnitude < WALK_MAX_VELOCITY) playerBody.AddForce(directedVector * WALK_ACCELERATION);
         if (playerBody.velocity.magnitude > WALK_MAX_VELOCITY) playerBody.velocity.SetMagnitude(WALK_MAX_VELOCITY);
-    }
-
-    private void WalkRight()
-    {
-        Dbg.Log("WalkRight");
-        Walk(WalkDirection.Right);
     }
 
     void LeftCommand()
@@ -79,12 +74,6 @@ public class Game : MonoBehaviour {
         Dbg.Log("LeftCommand");
         playerBody.drag = initialPlayerBodyDrag;
         walkDirection = WalkDirection.Left;
-    }
-
-    void WalkLeft()
-    {
-        Dbg.Log(this, "WalkLeft");
-        Walk(WalkDirection.Left);
     }
 
     private void Jump()
@@ -95,18 +84,6 @@ public class Game : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        //switch (walkingDirection)
-        //{
-        //    case WalkDirection.None:
-        //        StopWalking();
-        //        break;
-        //    case WalkDirection.Left:
-        //        WalkLeft();
-        //        break;
-        //    case WalkDirection.Right:
-        //        WalkRight();
-        //        break;
-        //}
         Walk(walkDirection);
     }
 
@@ -132,22 +109,7 @@ public class Game : MonoBehaviour {
     void HandleTextCommand(string textCommand)
     {
         Dbg.Log("HandleTextCommand", textCommand);
-        //Delegates.VoidVoid reaction = commandMap.Get(textCommand);
-        //Dbg.Log("reaction", reaction);
-        //Dbg.Log("reaction", reaction != null);
-        //Dbg.Log("contains", commandMap.ContainsKey(textCommand));
         if (commandMap.ContainsKey(textCommand))
-            //{
-            //    Dbg.Log(this, "call reaction?");
-            //    //reaction();
             commandMap.Get(textCommand)();
-        //}
-        //Dbg.Log(this, textCommand == "LEFT");
-        //if (textCommand == "LEFT")
-        //{
-        //    Dbg.Log(this, "textCommand  is LEFT, should WalkLeft");
-        //    WalkLeft();
-        //}
-
     }
 }
