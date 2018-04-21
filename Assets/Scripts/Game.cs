@@ -11,6 +11,7 @@ public class Game : MonoBehaviour {
     public GameObject player;
     Rigidbody2D playerBody;
     float initialPlayerBodyDrag;
+    public GameObject playerFocus;
 
     public Text inputText;
     Dictionary<string, Delegates.VoidVoid> commandMap;
@@ -85,6 +86,10 @@ public class Game : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         Walk(walkDirection);
+        //Dbg.Log(this, playerFocus.transform.position);
+        //Dbg.Log(this, playerBody.velocity.UnitVector());
+        Dbg.Log(this, playerBody.velocity.normalized);
+        playerFocus.transform.localPosition = playerBody.velocity.normalized * 5f;
     }
 
     void OnGUI()
