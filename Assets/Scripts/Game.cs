@@ -107,7 +107,7 @@ public class Game : MonoBehaviour {
         {
             //Dbg.Log(this, evt.keyCode);
 
-            if (evt.keyCode.ToString().Length==1)
+            if (evt.keyCode.ToString().Length == 1)
             {
                 inputText.text += evt.keyCode.ToString();
             }
@@ -116,6 +116,8 @@ public class Game : MonoBehaviour {
                 HandleTextCommand(inputText.text);
                 inputText.text = "";
             }
+            else if (evt.keyCode == KeyCode.Backspace)
+                if (inputText.text.Length > 0) inputText.text = inputText.text.Substring(0, inputText.text.Length - 1);
         }
     }
 
