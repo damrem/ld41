@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-
+using System;
 public class EnemyPatrol : MonoBehaviour
 {
     public WalkDirection initialWalkDirection = WalkDirection.Left;
 
     Walk walk;
+    GameObject lastCollidedGameObject;
 
     void Start()
     {
@@ -20,7 +21,9 @@ public class EnemyPatrol : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        ToggleWalkDirection();
+        if(collision.gameObject!=lastCollidedGameObject)
+            ToggleWalkDirection();
+        lastCollidedGameObject = collision.gameObject;
     }
 
     
