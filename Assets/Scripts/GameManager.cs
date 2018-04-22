@@ -165,7 +165,8 @@ public class GameManager : MonoBehaviour {
     void Update () {
         Vector2 position = playerBody.velocity.normalized * 5f;
         position.y /= 2;
-        //playerFocus.transform.localPosition = position;
+        player.transform.GetChild(0).localPosition = position;
+        
     }
 
     void OnGUI()
