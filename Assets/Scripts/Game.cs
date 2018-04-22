@@ -17,13 +17,8 @@ public class Game : MonoBehaviour {
     public Text inputText;
     Dictionary<string, Delegates.VoidVoid> commandMap;
 
-    //public float WALK_ACCELERATION = 50;
-    //public float WALK_MAX_VELOCITY = 5;
-    //WalkDirection walkDirection = WalkDirection.None;
     public static Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
-    //public float STOP_DECELERATION = 5;
 
-    public float JUMP_POWER = 500;
     public float GRAVITY = 5;
 
     void Start () {
@@ -94,7 +89,7 @@ public class Game : MonoBehaviour {
     void JumpCommand()
     {
         Dbg.Log(this, "jump");
-        playerBody.AddForce(Vector2.up * JUMP_POWER);
+        player.GetComponent<JumpBehavior>().Jump();
     }
 
     // Update is called once per frame
