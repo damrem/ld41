@@ -12,22 +12,27 @@ public class Game : MonoBehaviour {
     Rigidbody2D playerBody;
     float initialPlayerBodyDrag;
     public GameObject playerFocus;
+    Walk playerWalk;
 
     public Text inputText;
     Dictionary<string, Delegates.VoidVoid> commandMap;
-    public float WALK_ACCELERATION = 50;
-    public float WALK_MAX_VELOCITY = 5;
+
+    //public float WALK_ACCELERATION = 50;
+    //public float WALK_MAX_VELOCITY = 5;
+    //WalkDirection walkDirection = WalkDirection.None;
+    public static Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
+    //public float STOP_DECELERATION = 5;
+
     public float JUMP_POWER = 500;
-    public float STOP_DECELERATION = 5;
     public float GRAVITY = 5;
-    WalkDirection walkDirection = WalkDirection.None;
-    Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
 
     void Start () {
         Physics2D.gravity = Vector2.down * GRAVITY;
 
         playerBody = player.GetComponent<Rigidbody2D>();
         initialPlayerBodyDrag = playerBody.drag;
+
+        playerWalk = player.GetComponent<Walk>();
 
         commandMap = new Dictionary<string, Delegates.VoidVoid>()
         {
@@ -63,30 +68,27 @@ public class Game : MonoBehaviour {
     void StopCommand()
     {
         Dbg.Log(this, "StopCommand");
-        playerBody.drag = STOP_DECELERATION;
-        walkDirection = WalkDirection.None;
+        //playerBody.drag = STOP_DECELERATION;
+        //playerWalk.direction = WalkDirection.None;
+        playerWalk.Stop();
+        
     }
 
     void RightCommand()
     {
         Dbg.Log("RightCommand");
-        playerBody.drag = initialPlayerBodyDrag;
-        walkDirection = WalkDirection.Right;
-    }
-
-    void Walk(WalkDirection direction)
-    {
-        Dbg.Log(this, (direction != WalkDirection.None) + " && " + Mathf.Abs(playerBody.velocity.x));
-        Vector2 directedVector = directedWalkVectorMap.Get(direction);
-        if (playerBody.velocity.magnitude < WALK_MAX_VELOCITY) playerBody.AddForce(directedVector * WALK_ACCELERATION);
-        if (playerBody.velocity.magnitude > WALK_MAX_VELOCITY) playerBody.velocity.SetMagnitude(WALK_MAX_VELOCITY);
+        playerWalk.Right();
+        //playerBody.drag = initialPlayerBodyDrag;
+        //playerWalk.direction = WalkDirection.Right;
     }
 
     void LeftCommand()
     {
         Dbg.Log("LeftCommand");
-        playerBody.drag = initialPlayerBodyDrag;
-        walkDirection = WalkDirection.Left;
+        //playerBody.drag = initialPlayerBodyDrag;
+        //walkDirection = WalkDirection.Left;
+        //player.GetComponent<Walk>().direction = WalkDirection.Left;
+        playerWalk.Left();
     }
 
     void JumpCommand()
@@ -97,10 +99,7 @@ public class Game : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        Walk(walkDirection);
-        //Dbg.Log(this, playerFocus.transform.position);
-        //Dbg.Log(this, playerBody.velocity.UnitVector());
-        Dbg.Log(this, playerBody.velocity.normalized);
+        //Walk(walkDirection);
         Vector2 position = playerBody.velocity.normalized * 5f;
         position.y /= 2;
         playerFocus.transform.localPosition = position;
