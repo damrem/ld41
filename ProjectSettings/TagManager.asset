@@ -8,6 +8,8 @@ TagManager:
   - Lethal
   - EnemyWeakPoint
   - Door
+  - Pit
+  - Wall
   layers:
   - Default
   - TransparentFX

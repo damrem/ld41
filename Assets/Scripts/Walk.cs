@@ -20,7 +20,7 @@ public class Walk : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 directedVector = Game.directedWalkVectorMap.Get(direction);
+        Vector2 directedVector = GameManager.directedWalkVectorMap.Get(direction);
         if (body.velocity.magnitude < maxVelocity) body.AddForce(directedVector * acceleration);
         if (body.velocity.magnitude > maxVelocity) body.velocity.SetMagnitude(maxVelocity);
     }
@@ -39,7 +39,7 @@ public class Walk : MonoBehaviour
 
     public void Stop()
     {
-        body.drag = stopDeceleration;
+        if (body != null) body.drag = stopDeceleration;
         direction = WalkDirection.None;
     }
 }
