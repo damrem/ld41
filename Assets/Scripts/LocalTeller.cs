@@ -12,16 +12,16 @@ public class LocalTeller : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            Game.teller.Comment(speeches);
+            GameManager.instance.Tell(speeches);
         }
     }
 
     IEnumerator TellSpeeches()
     {
-        Game.teller.Comment(speeches);
+        GameManager.instance.Tell(speeches);
         foreach (string speech in speeches)
         {
-            Game.teller.Comment(speech);
+            GameManager.instance.Tell(speech);
             yield return new WaitForSeconds(delaySec);
         }
     }

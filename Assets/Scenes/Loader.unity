@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6ca9b378949414dab0e7885aa1366d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManagerPrefab: {fileID: 1668465543312966, guid: 022cd79a665c4a946b588cffa007e3c5,
+  gameManagerPrefab: {fileID: 1180113032141890, guid: 022cd79a665c4a946b588cffa007e3c5,
     type: 2}
   soundManager: {fileID: 0}
   startLevelIndex: 1

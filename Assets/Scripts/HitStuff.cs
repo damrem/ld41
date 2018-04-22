@@ -14,31 +14,55 @@ public class HitStuff : MonoBehaviour
         {
             case "EnemyWeakPoint":
                 Dbg.Log(this, "EnemyWeakPoint");
-                Game.teller.Tell("You kill an monster by jumping on its head.");
+                GameManager.instance.Tell("You kill an monster by jumping on its head.");
                 GetComponent<JumpBehavior>().Jump(bounceOnEnemyHeadFactor);
                 if (GetComponent<Mortal>().IsAlive) collider.GetComponentInParent<Mortal>().Die();
                 break;
+
             case "Lethal":
                 Dbg.Log(this, "Lethal");
-                Game.teller.Tell("You've been killed by a monster.");
+                GameManager.instance.Tell("You've been killed by a monster.");
                 if (collider.GetComponentInParent<Mortal>().IsAlive) GetComponent<Mortal>().Die();
                 break;
+
             case "Door":
                 isAtDoor = true;
-                Game.teller.Tell("You reach a door. Who knows where it could lead you... Probably to next level?");
-                Game.teller.Comment("Type \"enter\".");
+                GameManager.instance.Tell("You reach a door.", "Who knows where it could lead you...", "Probably to the next level?", "Type \"exit\".");
                 break;
+
+            case "Pit":
+                Loader.Respawn();
+                GameManager.instance.Tell(
+                    "You fell into a very very deep pit.",
+                    "Imagine the noise the impact has made and the look of what's left of your \"body\".",
+                    "You can't respawn in real life. Don't try this at home.",
+                    "But you're lucky it's a game: you've respawned."
+                );
+                break;
+            
         }
     }
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collider)
     {
-        switch (collision.tag)
+        switch (collider.tag)
         {
             case "Door":
                 isAtDoor = false;
-                Game.teller.Tell("You leave the door, like you don't care. Up to you.");
-                Game.teller.Tell("Maybe next time?");
+                GameManager.instance.Tell(
+                    "You leave the door, like you don't care. Up to you.",
+                    "Maybe next time?"
+                );
                 break;
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Dbg.Log(this, "OnCollisionEnter2D", collision, collision.gameObject.tag);
+        switch (collision.gameObject.tag)
+        {
+            case "Wall":
+                GameManager.instance.Tell("You hit a wall.", "Laaame.");
+            break;
         }
     }
 }

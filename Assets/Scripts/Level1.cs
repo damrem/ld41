@@ -11,19 +11,34 @@ public class Level1 : MonoBehaviour {
     bool hasWalkedLeft = false;
     bool hasStopped = false;
 
+    private void Start()
+    {
+        GameManager.instance.StopCommanded += OnStopCommand;
+        GameManager.instance.LeftCommanded += OnLeftCommand;
+        GameManager.instance.RightCommanded += OnRightCommand;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.instance.StopCommanded -= OnStopCommand;
+        GameManager.instance.LeftCommanded -= OnLeftCommand;
+        GameManager.instance.RightCommanded -= OnRightCommand;
+    }
+
     public void OnStopCommand()
     {
         if (hasStopped) return;
+        Dbg.Log(this, "onstopcommand");
         hasStopped = true;
         Dbg.Log(this, "OnStopCommand");
         Destroy(localTellerWaitStop);
         Destroy(localTellerWhyNotStop);
-        if (hasWalkedLeft) Game.teller.Comment(new List<string>(){
+        if (hasWalkedLeft) GameManager.instance.Tell(new List<string>(){
             "Thank you!",
             "Just keep on now.",
             "Type \"right\" again."
         });
-        else Game.teller.Comment(new List<string>(){
+        else GameManager.instance.Tell(new List<string>(){
             "Thank you!",
             "And now what?",
             "Type \"left\" maybe?"
