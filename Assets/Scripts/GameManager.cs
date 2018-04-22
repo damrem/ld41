@@ -25,7 +25,12 @@ public class GameManager : MonoBehaviour {
     List<string> storyLines = new List<string>();
     public int storyLineCapacity = 12;
 
-    public static Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
+    public static Dictionary<WalkDirection, Vector2> directedWalkVectorMap = new Dictionary<WalkDirection, Vector2>()
+    {
+        { WalkDirection.Left, Vector2.left },
+        { WalkDirection.None, Vector2.zero },
+        { WalkDirection.Right, Vector2.right }
+    };
 
     public float gravity = 50;
 
@@ -49,40 +54,6 @@ public class GameManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(player);
         DontDestroyOnLoad(canvas);
-        //DontDestroyOnLoad(consoleText);
-        //DontDestroyOnLoad(commandLine);
-        //    Dbg.Log(this, "awake");
-        //    //DontDestroyOnLoad(GetComponent<Canvas>());
-        //    //DontDestroyOnLoad(GetComponent<Light>());
-        //    //DontDestroyOnLoad(GetComponent<Camera>());
-        playerWalk = player.GetComponent<Walk>();
-        playerBody = player.GetComponent<Rigidbody2D>();
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        //teller = GetComponent<StoryTeller>();
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Dbg.Log(this, "OnSceneLoad", scene, mode);
-        if (mode != LoadSceneMode.Single) return;
-        playerBody.position = new Vector2();
-        playerBody.velocity = new Vector2();
-        playerWalk.Stop();
-    }
-
-    void Start ()
-    {
-        storyLines = new List<string>();
-        Dbg.Log(this, "start");
-        //SceneManager.LoadScene("Level1");
-
-        Physics2D.gravity = Vector2.down * gravity;
-
-        //playerBody = player.GetComponent<Rigidbody2D>();
-        //playerWalk = player.GetComponent<Walk>();
-
-        //teller = GetComponent<StoryTeller>();
 
         commandMap = new Dictionary<string, Delegates.VoidVoid>()
         {
@@ -98,12 +69,26 @@ public class GameManager : MonoBehaviour {
             {"exit",ExitCommand }
         };
 
-        directedWalkVectorMap = new Dictionary<WalkDirection, Vector2>()
-        {
-            { WalkDirection.Left, Vector2.left },
-            { WalkDirection.None, Vector2.zero },
-            { WalkDirection.Right, Vector2.right }
-        };
+        playerWalk = player.GetComponent<Walk>();
+        playerBody = player.GetComponent<Rigidbody2D>();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Dbg.Log(this, "OnSceneLoad", scene, mode);
+        if (mode != LoadSceneMode.Single) return;
+        playerBody.position = new Vector2();
+        playerBody.velocity = new Vector2();
+        playerWalk.Stop();
+    }
+
+    void Start ()
+    {
+        Dbg.Log(this, "start");
+        storyLines = new List<string>();
+        Physics2D.gravity = Vector2.down * gravity;
     }
 
     private void StandupCommand()
@@ -164,7 +149,7 @@ public class GameManager : MonoBehaviour {
 
     void Update () {
         Vector2 position = playerBody.velocity.normalized * 5f;
-        position.y /= 2;
+        position.y = 2;
         player.transform.GetChild(0).localPosition = position;
         
     }
