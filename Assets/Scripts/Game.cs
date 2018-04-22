@@ -29,11 +29,18 @@ public class Game : MonoBehaviour {
         playerBody = player.GetComponent<Rigidbody2D>();
         initialPlayerBodyDrag = playerBody.drag;
 
-        commandMap = new Dictionary<string, Delegates.VoidVoid>();
-        commandMap.Add("JUMP", Jump);
-        commandMap.Add("LEFT", LeftCommand);
-        commandMap.Add("RIGHT", RightCommand);
-        commandMap.Add("STOP", StopCommand);
+        commandMap = new Dictionary<string, Delegates.VoidVoid>()
+        {
+            {"JUMP", JumpCommand },
+            {"LEFT", LeftCommand},
+            {"RIGHT", RightCommand},
+            {"STOP", StopCommand},
+            {"CROUCH", CrouchCommand },
+            {"SQUAT", CrouchCommand },
+            {"STAND", StandupCommand },
+            {"GET UP", StandupCommand },
+            {"STAND UP", StandupCommand },
+        };
 
         directedWalkVectorMap = new Dictionary<WalkDirection, Vector2>()
         {
@@ -43,16 +50,21 @@ public class Game : MonoBehaviour {
         };
     }
 
+    private void StandupCommand()
+    {
+        playerBody.transform.localScale = new Vector3(1, 1, 1);
+    }
+
+    private void CrouchCommand()
+    {
+        playerBody.transform.localScale = new Vector3(1, 0.5f, 1);
+    }
+
     void StopCommand()
     {
         Dbg.Log(this, "StopCommand");
         playerBody.drag = STOP_DECELERATION;
         walkDirection = WalkDirection.None;
-    }
-
-    private void StopWalking()
-    {
-        Dbg.Log("StopWalking");
     }
 
     void RightCommand()
@@ -77,7 +89,7 @@ public class Game : MonoBehaviour {
         walkDirection = WalkDirection.Left;
     }
 
-    private void Jump()
+    void JumpCommand()
     {
         Dbg.Log(this, "jump");
         playerBody.AddForce(Vector2.up * JUMP_POWER);
@@ -89,7 +101,9 @@ public class Game : MonoBehaviour {
         //Dbg.Log(this, playerFocus.transform.position);
         //Dbg.Log(this, playerBody.velocity.UnitVector());
         Dbg.Log(this, playerBody.velocity.normalized);
-        playerFocus.transform.localPosition = playerBody.velocity.normalized * 5f;
+        Vector2 position = playerBody.velocity.normalized * 5f;
+        position.y /= 2;
+        playerFocus.transform.localPosition = position;
     }
 
     void OnGUI()
