@@ -4,14 +4,12 @@ public class EnemyPatrol : MonoBehaviour
 {
     public WalkDirection initialWalkDirection = WalkDirection.Left;
 
-    Rigidbody2D body;
     Walk walk;
 
     void Start()
     {
         walk = GetComponent<Walk>();
         walk.direction = initialWalkDirection;
-        body = GetComponent<Rigidbody2D>();
     }
 
     private void ToggleWalkDirection()
