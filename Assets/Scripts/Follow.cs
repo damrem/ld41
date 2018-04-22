@@ -7,7 +7,6 @@ public class Follow : MonoBehaviour {
 
 	void FixedUpdate ()
     {
-		Vector2 delta = target.transform.position - transform.position;
         float prevZ = transform.position.z;
         Vector3 nextPosition = Vector3.Lerp(transform.position, target.transform.position, factor);
         nextPosition.z = prevZ;

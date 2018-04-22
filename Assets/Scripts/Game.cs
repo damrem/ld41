@@ -10,36 +10,39 @@ public class Game : MonoBehaviour {
 
     public GameObject player;
     Rigidbody2D playerBody;
-    float initialPlayerBodyDrag;
     public GameObject playerFocus;
     Walk playerWalk;
+    public static StoryTeller teller;
 
-    public Text inputText;
+    public Text commandLine;
     Dictionary<string, Delegates.VoidVoid> commandMap;
+
+    public Text consoleText;
 
     public static Dictionary<WalkDirection, Vector2> directedWalkVectorMap;
 
     public float GRAVITY = 5;
 
-    void Start () {
+    void Start ()
+    {
         Physics2D.gravity = Vector2.down * GRAVITY;
 
         playerBody = player.GetComponent<Rigidbody2D>();
-        initialPlayerBodyDrag = playerBody.drag;
-
         playerWalk = player.GetComponent<Walk>();
+
+        teller = GetComponent<StoryTeller>();
 
         commandMap = new Dictionary<string, Delegates.VoidVoid>()
         {
-            {"JUMP", JumpCommand },
-            {"LEFT", LeftCommand},
-            {"RIGHT", RightCommand},
-            {"STOP", StopCommand},
-            {"CROUCH", CrouchCommand },
-            {"SQUAT", CrouchCommand },
-            {"STAND", StandupCommand },
-            {"GET UP", StandupCommand },
-            {"STAND UP", StandupCommand },
+            {"jump", JumpCommand },
+            {"left", LeftCommand},
+            {"right", RightCommand},
+            {"stop", StopCommand},
+            {"crouch", CrouchCommand },
+            {"squat", CrouchCommand },
+            {"stand", StandupCommand },
+            {"get up", StandupCommand },
+            {"stand up", StandupCommand },
         };
 
         directedWalkVectorMap = new Dictionary<WalkDirection, Vector2>()
@@ -52,49 +55,42 @@ public class Game : MonoBehaviour {
 
     private void StandupCommand()
     {
+        teller.Comment("You stand up.");
         playerBody.transform.localScale = new Vector3(1, 1, 1);
     }
 
     private void CrouchCommand()
     {
+        teller.Comment("You crouch.");
         playerBody.transform.localScale = new Vector3(1, 0.5f, 1);
     }
 
     void StopCommand()
     {
-        Dbg.Log(this, "StopCommand");
-        //playerBody.drag = STOP_DECELERATION;
-        //playerWalk.direction = WalkDirection.None;
+        teller.Comment("You stop walking.");
         playerWalk.Stop();
         
     }
 
     void RightCommand()
     {
-        Dbg.Log("RightCommand");
+        teller.Comment("You walk right.");
         playerWalk.Right();
-        //playerBody.drag = initialPlayerBodyDrag;
-        //playerWalk.direction = WalkDirection.Right;
     }
 
     void LeftCommand()
     {
-        Dbg.Log("LeftCommand");
-        //playerBody.drag = initialPlayerBodyDrag;
-        //walkDirection = WalkDirection.Left;
-        //player.GetComponent<Walk>().direction = WalkDirection.Left;
+        teller.Comment("You walk left.");
         playerWalk.Left();
     }
 
     void JumpCommand()
     {
-        Dbg.Log(this, "jump");
+        teller.Comment("You jump.");
         player.GetComponent<JumpBehavior>().Jump();
     }
 
-    // Update is called once per frame
     void Update () {
-        //Walk(walkDirection);
         Vector2 position = playerBody.velocity.normalized * 5f;
         position.y /= 2;
         playerFocus.transform.localPosition = position;
@@ -106,25 +102,24 @@ public class Game : MonoBehaviour {
         if (evt.isKey && evt.type == EventType.KeyUp)
         {
             //Dbg.Log(this, evt.keyCode);
-
             if (evt.keyCode.ToString().Length == 1)
-            {
-                inputText.text += evt.keyCode.ToString();
-            }
+                commandLine.text += evt.keyCode.ToString().ToLower();
             else if (evt.keyCode == KeyCode.Return)
-            {
-                HandleTextCommand(inputText.text);
-                inputText.text = "";
-            }
+                HandleTextCommand(commandLine.text);
             else if (evt.keyCode == KeyCode.Backspace)
-                if (inputText.text.Length > 0) inputText.text = inputText.text.Substring(0, inputText.text.Length - 1);
+                if (commandLine.text.Length > 0) commandLine.text = commandLine.text.Substring(0, commandLine.text.Length - 1);
         }
     }
 
     void HandleTextCommand(string textCommand)
     {
         Dbg.Log("HandleTextCommand", textCommand);
+        textCommand = textCommand.ToLower();
         if (commandMap.ContainsKey(textCommand))
             commandMap.Get(textCommand)();
+        else teller.Comment("You act confusingly.");
+
+        commandLine.text = "";
     }
+
 }

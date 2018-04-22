@@ -1,9 +1,25 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Mortal : MonoBehaviour
 {
+    private bool isDead;
+    public bool IsDead
+    {
+        get
+        {
+            return isDead;
+        }
+    }
+    public bool IsAlive
+    {
+        get
+        {
+            return !isDead;
+        }
+    }
 
     // Use this for initialization
     void Start()
@@ -23,8 +39,9 @@ public class Mortal : MonoBehaviour
         GetComponent<Walk>().direction = WalkDirection.None;
         StartCoroutine(AnimateDying());
         GetComponent<Rigidbody2D>().simulated = false;
+        foreach (Rigidbody2D body in GetComponentsInChildren<Rigidbody2D>()) body.simulated = false;
         //GetComponent<BoxCollider2D>().enabled = false;
-
+        isDead = true;
 
     }
 
