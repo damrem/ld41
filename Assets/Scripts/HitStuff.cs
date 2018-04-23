@@ -13,16 +13,23 @@ public class HitStuff : MonoBehaviour
         switch (collider.tag)
         {
             case "EnemyWeakPoint":
-                Dbg.Log(this, "EnemyWeakPoint");
-                GameManager.instance.Tell("You kill an monster by jumping on its head.");
+                Dbg.Log(this, "EnemyWeakPoint", GetComponent<Mortal>().IsAlive);
+                GameManager.instance.Tell("You kill a monster by jumping on its head.");
                 GetComponent<JumpBehavior>().Jump(bounceOnEnemyHeadFactor);
+                
                 if (GetComponent<Mortal>().IsAlive) collider.GetComponentInParent<Mortal>().Die();
                 break;
 
             case "Lethal":
                 Dbg.Log(this, "Lethal");
-                GameManager.instance.Tell("You've been killed by a monster.");
+                GameManager.instance.Tell(
+                    "You've been killed by a monster.",
+                    "That's bad oviously.",
+                    "It means you're dead.",
+                    "And you'll have to start the level again."
+                );
                 if (collider.GetComponentInParent<Mortal>().IsAlive) GetComponent<Mortal>().Die();
+                Loader.Respawn();
                 break;
 
             case "Door":
@@ -39,7 +46,9 @@ public class HitStuff : MonoBehaviour
                     "But you're lucky it's a game: you've respawned."
                 );
                 break;
-            
+            case "Finish":
+                GameManager.instance.isAtFinalDoor = true;
+                break;
         }
     }
     private void OnTriggerExit2D(Collider2D collider)
@@ -52,6 +61,9 @@ public class HitStuff : MonoBehaviour
                     "You leave the door, like you don't care. Up to you.",
                     "Maybe next time?"
                 );
+                break;
+            case "Finish":
+                GameManager.instance.isAtFinalDoor = false;
                 break;
         }
     }

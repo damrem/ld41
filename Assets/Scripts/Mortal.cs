@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class Mortal : MonoBehaviour
 {
     private bool isDead;
+    private Coroutine dyingAnimation;
+
     public bool IsDead
     {
         get
@@ -37,12 +39,22 @@ public class Mortal : MonoBehaviour
     {
         Dbg.Log(this, "Die");
         GetComponent<Walk>().direction = WalkDirection.None;
-        StartCoroutine(AnimateDying());
+        dyingAnimation = StartCoroutine(AnimateDying());
         GetComponent<Rigidbody2D>().simulated = false;
         foreach (Rigidbody2D body in GetComponentsInChildren<Rigidbody2D>()) body.simulated = false;
         //GetComponent<BoxCollider2D>().enabled = false;
         isDead = true;
+    }
 
+    public void Resurrect()
+    {
+        isDead = false;
+        if (dyingAnimation != null) StopCoroutine(dyingAnimation);
+        transform.position = new Vector2();
+        transform.localScale = new Vector3(1, 1, 1);
+        foreach (Rigidbody2D body in GetComponentsInChildren<Rigidbody2D>()) body.simulated = true;
+        GetComponent<Rigidbody2D>().simulated = true;
+        GetComponent<Walk>().direction = WalkDirection.None;
     }
 
     IEnumerator AnimateDying()
@@ -53,6 +65,5 @@ public class Mortal : MonoBehaviour
             transform.localScale = new Vector3(intermediateScale, intermediateScale, intermediateScale);
             yield return null;
         }
-        transform.localScale = new Vector3(1, 1, 1);
     }
 }

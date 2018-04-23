@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
@@ -8,10 +9,18 @@ public class Loader : MonoBehaviour
 
     public int startLevelIndex = 1;
 
-    static int currentLevelIndex;
 
     private static bool hasRespawned;
     public static bool HasRespawned { get { return hasRespawned; } }
+
+    static int currentLevelIndex;
+    public static int CurrentLevelIndex
+    {
+        get
+        {
+            return currentLevelIndex;
+        }
+    }
 
     // Use this for initialization
     void Awake()
@@ -34,6 +43,7 @@ public class Loader : MonoBehaviour
 
     public static void Respawn()
     {
+        Dbg.Log("", "Respawn");
         hasRespawned = true;
         SceneManager.LoadScene("Level" + currentLevelIndex);
     }
@@ -43,5 +53,6 @@ public class Loader : MonoBehaviour
         hasRespawned = false;
         currentLevelIndex++;
         SceneManager.LoadScene("Level"+currentLevelIndex);
+        if (currentLevelIndex == 5) GameManager.instance.mustGiveCommandFeedback = false;
     }
 }

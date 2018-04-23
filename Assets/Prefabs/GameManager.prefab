@@ -292,7 +292,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9b61709d9e6cfb144a011bbb740ff430, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -433,8 +433,10 @@ MonoBehaviour:
   commandLine: {fileID: 114793778424557896}
   player: {fileID: 1373980063673666}
   consoleText: {fileID: 114139909396853594}
-  storyLineCapacity: 12
+  storyLineCapacity: 24
   gravity: 50
+  mustGiveCommandFeedback: 1
+  isAtFinalDoor: 0
 --- !u!114 &114139909396853594
 MonoBehaviour:
   m_ObjectHideFlags: 1

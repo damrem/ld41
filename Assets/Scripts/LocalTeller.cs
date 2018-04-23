@@ -16,13 +16,4 @@ public class LocalTeller : MonoBehaviour
         }
     }
 
-    IEnumerator TellSpeeches()
-    {
-        GameManager.instance.Tell(speeches);
-        foreach (string speech in speeches)
-        {
-            GameManager.instance.Tell(speech);
-            yield return new WaitForSeconds(delaySec);
-        }
-    }
 }

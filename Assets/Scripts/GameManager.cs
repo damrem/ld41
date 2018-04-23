@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour {
     };
 
     public float gravity = 50;
+    public bool mustGiveCommandFeedback = true;
+    public bool isAtFinalDoor = false;
 
     public event Action StopCommanded;
     public event Action LeftCommanded;
@@ -66,7 +68,8 @@ public class GameManager : MonoBehaviour {
             {"stand", StandupCommand },
             {"get up", StandupCommand },
             {"stand up", StandupCommand },
-            {"exit",ExitCommand }
+            {"exit",ExitCommand },
+            {"win", EnjoyVictoryCommand }
         };
 
         playerWalk = player.GetComponent<Walk>();
@@ -82,6 +85,7 @@ public class GameManager : MonoBehaviour {
         playerBody.position = new Vector2();
         playerBody.velocity = new Vector2();
         playerWalk.Stop();
+        player.GetComponent<Mortal>().Resurrect();
     }
 
     void Start ()
@@ -91,44 +95,57 @@ public class GameManager : MonoBehaviour {
         Physics2D.gravity = Vector2.down * gravity;
     }
 
+    private void EnjoyVictoryCommand()
+    {
+        if (Loader.CurrentLevelIndex == 4 && isAtFinalDoor)
+        {
+            if (mustGiveCommandFeedback) Tell("You enjoy victory.");
+            Loader.NextLevel();
+        }
+        else
+        {
+            if (mustGiveCommandFeedback) Tell("Cheaters will be banned.");
+        }
+    }
+
     private void StandupCommand()
     {
-        Tell("You stand up.");
+        if(mustGiveCommandFeedback) Tell("You stand up.");
         playerBody.transform.localScale = new Vector3(1, 1, 1);
         if (StandupCommanded != null) StandupCommanded.Invoke();
     }
 
     private void CrouchCommand()
     {
-        Tell("You crouch.");
+        if (mustGiveCommandFeedback) Tell("You crouch.");
         playerBody.transform.localScale = new Vector3(1, 0.5f, 1);
         if (CrouchCommanded != null) CrouchCommanded.Invoke();
     }
 
     void StopCommand()
     {
-        Tell("You stop walking.");
+        if (mustGiveCommandFeedback) Tell("You stop walking.");
         playerWalk.Stop();
         if (StopCommanded != null) StopCommanded.Invoke();
     }
 
     void RightCommand()
     {
-        Tell("You walk right.");
+        if (mustGiveCommandFeedback) Tell("You walk right.");
         playerWalk.Right();
         if (RightCommanded != null) RightCommanded.Invoke();
     }
 
     void LeftCommand()
     {
-        Tell("You walk left.");
+        if (mustGiveCommandFeedback) Tell("You walk left.");
         playerWalk.Left();
         if (LeftCommanded != null) LeftCommanded.Invoke();
     }
 
     void JumpCommand()
     {
-        Tell("You jump.");
+        if (mustGiveCommandFeedback) Tell("You jump.");
         player.GetComponent<JumpBehavior>().Jump();
         if (JumpCommanded != null) JumpCommanded.Invoke();
     }
@@ -137,12 +154,12 @@ public class GameManager : MonoBehaviour {
     {
         if (player.GetComponent<HitStuff>().IsAtDoor)
         {
-            Tell("You're leaving the level...");
+            if (mustGiveCommandFeedback) Tell("You're leaving the level...");
             Loader.NextLevel();
         }
         else
         {
-            Tell("Exit? You need a door for that!");
+            if (mustGiveCommandFeedback) Tell("Exit? You need a door for that!");
         }
         if (ExitCommanded != null) ExitCommanded.Invoke();
     }
@@ -165,14 +182,23 @@ public class GameManager : MonoBehaviour {
             else if (evt.keyCode == KeyCode.Return)
                 HandleTextCommand(commandLine.text);
             else if (evt.keyCode == KeyCode.Backspace)
-                if (commandLine.text.Length > 0) commandLine.text = commandLine.text.Substring(0, commandLine.text.Length - 1);
+            {
+                if (commandLine.text.Length > 0)
+                    commandLine.text = commandLine.text.Substring(0, commandLine.text.Length - 1);
+            }
+            else if (evt.keyCode == KeyCode.Escape)
+                commandLine.text = "";
+            else if (evt.keyCode == KeyCode.Space)
+                commandLine.text += " ";
         }
     }
 
     void HandleTextCommand(string textCommand)
     {
+        if (!mustGiveCommandFeedback) return;
         Dbg.Log("HandleTextCommand", textCommand);
         textCommand = textCommand.ToLower();
+        Tell("> " + textCommand);
         if (commandMap.ContainsKey(textCommand))
             commandMap.Get(textCommand)();
         else Tell("You act confusingly.");
@@ -201,6 +227,12 @@ public class GameManager : MonoBehaviour {
     public void Tell(List<string> sthg, float delaySec = 2)
     {
         StartCoroutine(MultiComment(sthg, delaySec));
+    }
+
+    public void ClearConsole()
+    {
+        storyLines.Clear();
+        consoleText.text = "";
     }
 
     IEnumerator MultiComment(List<string> speeches, float delaySec = 2)

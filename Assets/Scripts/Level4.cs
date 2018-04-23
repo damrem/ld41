@@ -5,15 +5,16 @@ public class Level4 : MonoBehaviour
 {
     void Start()
     {
-        //GameManager.instance.gameObject.Find
-        //Camera camera = FindObjectOfType<Camera>();
-        //camera.transform.position = new Vector3(0, 0, -10);
-        //camera.orthographicSize = 10;
+        Camera camera = FindObjectOfType<Camera>();
+        camera.transform.position = new Vector3(0, 0, -10);
+
+        //GameManager.instance.player.transform.position = new Vector2(76, 0);
         if (!Loader.HasRespawned) GameManager.instance.Tell(
-            "Beware!", 
+            "The smell of death surrounds you.",
+            "This is the last levelllll!!!",
             "Here come... MONSTERS!", 
-            "As a matter of fact, you can defeat them...", 
-            "... by jumping on their head. Very original."
+            "Fear! Fear!", 
+            "Go now..."
         );
     }
 }
