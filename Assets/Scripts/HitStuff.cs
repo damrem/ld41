@@ -4,12 +4,11 @@ using System;
 public class HitStuff : MonoBehaviour
 {
     public float bounceOnEnemyHeadFactor = 0.75f;
-    bool isAtDoor = false;
-    public bool IsAtDoor { get { return isAtDoor; } }
+    static public bool isAtDoor = false;
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        Dbg.Log(this, "trigger", collider.tag);
+        Dbg.Log(this, "triggerenter", collider.tag);
         switch (collider.tag)
         {
             case "EnemyWeakPoint":
@@ -47,12 +46,14 @@ public class HitStuff : MonoBehaviour
                 );
                 break;
             case "Finish":
+                Dbg.Log(this, "Finish");
                 GameManager.instance.isAtFinalDoor = true;
                 break;
         }
     }
     private void OnTriggerExit2D(Collider2D collider)
     {
+        Dbg.Log(this, "triggerexit", collider.tag);
         switch (collider.tag)
         {
             case "Door":
@@ -63,6 +64,7 @@ public class HitStuff : MonoBehaviour
                 );
                 break;
             case "Finish":
+                Dbg.Log(this, "Unfinish");
                 GameManager.instance.isAtFinalDoor = false;
                 break;
         }

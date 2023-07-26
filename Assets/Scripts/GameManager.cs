@@ -82,6 +82,7 @@ public class GameManager : MonoBehaviour {
     {
         Dbg.Log(this, "OnSceneLoad", scene, mode);
         if (mode != LoadSceneMode.Single) return;
+        HitStuff.isAtDoor = false;
         playerBody.position = new Vector2();
         playerBody.velocity = new Vector2();
         playerWalk.Stop();
@@ -97,7 +98,8 @@ public class GameManager : MonoBehaviour {
 
     private void EnjoyVictoryCommand()
     {
-        if (Loader.CurrentLevelIndex == 4 && isAtFinalDoor)
+        Dbg.Log(this, "enjoy", Loader.CurrentLevelIndex, isAtFinalDoor);
+        if (isAtFinalDoor)
         {
             if (mustGiveCommandFeedback) Tell("You enjoy victory.");
             Loader.NextLevel();
@@ -152,11 +154,14 @@ public class GameManager : MonoBehaviour {
 
     void ExitCommand()
     {
-        if (player.GetComponent<HitStuff>().IsAtDoor)
+        if (HitStuff.isAtDoor)
         {
             if (mustGiveCommandFeedback) Tell("You're leaving the level...");
+            HitStuff.isAtDoor = false;
             Loader.NextLevel();
         }
+        else if (isAtFinalDoor)
+            EnjoyVictoryCommand();
         else
         {
             if (mustGiveCommandFeedback) Tell("Exit? You need a door for that!");

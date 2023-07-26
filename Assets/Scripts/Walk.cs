@@ -55,7 +55,7 @@ public class Walk : MonoBehaviour
         Dbg.Log(this, "Animate");
         while (true)
         {
-            Dbg.Log(this, "while");
+            //Dbg.Log(this, "while");
             GetComponent<Transform>().localScale.Scale(new Vector2(transform.localScale.x, Rnd.Float()));
             yield return null;
         }
